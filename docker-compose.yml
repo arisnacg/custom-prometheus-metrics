@@ -1,0 +1,28 @@
+services:
+  exporter:
+    hostname: exporter
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    depends_on:
+      - exporter
+    volumes:
+        - ./prometheus/rules.yml:/etc/prometheus/rules.yml
+        - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+        - prometheus_data:/prometheus
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    volumes:
+      - grafana_data:/var/lib/grafana
+volumes:
+  prometheus_data:
+  grafana_data:

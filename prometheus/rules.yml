@@ -1,0 +1,13 @@
+groups:
+
+- name: alert_rules
+  rules:
+  - alert: Bad response time
+    expr: avg(rate(requests_response_time_sum[10s])) by (publisherId) / 
+          avg(rate(requests_response_time_count[10s])) by (publisherId) > 5
+    for: 20s
+    labels:
+      severity: warning
+    annotations:
+      summary: "High average response time detected ({{ $labels.publisherId }})"
+      description: "The average response time for publisher {{ $labels.publisherId }} has exceeded 5 seconds over the last 20 seconds."
